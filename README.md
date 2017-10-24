@@ -14,10 +14,12 @@ Nouns:
 - Docking station
 
 Verbs:
-- Release
-- Working
-- Use
+- Release bike
+- Working bike
+- Use bike
 
-| Header 1  | Header 2  |
-| ---       | ---       |
-| Content 1 | Content 2 |
+| Objects   | Messages     |
+| ---       | ---          |
+| Person    | use_bike     |
+| Bike      | working_bike |
+| Docking   | release_bike |
