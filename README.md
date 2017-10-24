@@ -23,3 +23,13 @@ Verbs:
 | Person    | use_bike     |
 | Bike      | working_bike |
 | Docking   | release_bike |
+
+Domain Model:
+| Person |
+| ---    |
+
+| Docking Station |
+| ---             |
+
+| Bike |
+| ---
