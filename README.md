@@ -25,6 +25,7 @@ Verbs:
 | Docking   | release_bike |
 
 Domain Model:
+
 | Person |
 | ---    |
 
