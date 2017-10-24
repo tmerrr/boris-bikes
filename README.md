@@ -20,17 +20,12 @@ Verbs:
 
 | Objects   | Messages     |
 | ---       | ---          |
-| Person    | use_bike     |
+| Person    |              |
 | Bike      | working_bike |
 | Docking   | release_bike |
 
 Domain Model:
 
-| Person |
-| ---    |
+Docking Station <-- release_bike --> new Bike
 
-| Docking Station |
-| ---             |
-
-| Bike |
-| ---
+Bike <-- working_bike --> true/false?
