@@ -1,0 +1,9 @@
+
+Type error: name error of type: uninitialized constant
+
+The error happened in :
+/Users/Gabriela/.rvm/rubies/ruby-2.4.1/bin/irb:11:in `<main>'
+
+Error happened in line 1.
+
+Create the class of type DockingStation.
