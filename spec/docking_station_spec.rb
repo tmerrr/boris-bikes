@@ -16,8 +16,8 @@ describe DockingStation do
     it { is_expected.to respond_to(:dock) }
 
     describe '#dock' do
-      it 'does not exceed capacity of one' do
-        if subject.num_bikes < 20
+      it 'does not exceed capacity' do
+        if subject.num_bikes <= DockingStation::CAPACITY
           bike = Bike.new
           expect { subject.dock(bike) }.to raise_error 'Station up to capacity'
         end
@@ -28,7 +28,7 @@ describe DockingStation do
 
     context 'when dock is called' do
       it 'adds 1 to num_bikes if not full' do
-        if subject.num_bikes < 20
+        if subject.num_bikes < DockingStation::CAPACITY
           expect{subject.dock(Bike.new)}.to change {subject.num_bikes}.by(1)
         end
       end

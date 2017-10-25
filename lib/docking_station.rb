@@ -2,11 +2,12 @@ require_relative './bike.rb'
 
 class DockingStation
   attr_reader :bike, :current_bikes
+  CAPACITY = 20
 
   public
   def initialize
     @current_bikes = []
-    20.times { @current_bikes << Bike.new }
+    CAPACITY.times { @current_bikes << Bike.new }
   end
 
   def release_bike
@@ -25,12 +26,11 @@ class DockingStation
 
   private
   def full?
-    @current_bikes.length >= 20 
+    @current_bikes.length >= CAPACITY
   end
 
   def empty?
     @current_bikes.empty?
   end
-
 
 end
