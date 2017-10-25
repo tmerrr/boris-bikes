@@ -26,7 +26,7 @@ class DockingStation
 
   def dock(bike)
     fail 'Station up to capacity' if full?
-    # bike.working = broken_bike?
+    bike.working = broken_bike?
     @current_bikes << bike
     'Bike reported as broken' unless bike.working
   end
