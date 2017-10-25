@@ -17,7 +17,7 @@ describe DockingStation do
 
     describe '#dock' do
       it 'does not exceed capacity of one' do
-        if subject.any_bikes?
+        if subject.num_bikes < 20
           bike = Bike.new
           expect { subject.dock(bike) }.to raise_error 'Station up to capacity'
         end
@@ -26,7 +26,7 @@ describe DockingStation do
 
     it { is_expected.to respond_to(:num_bikes) }
 
-    context 'when return_bike is called' do
+    context 'when dock is called' do
       it 'adds 1 to num_bikes' do
         unless subject.any_bikes?
           bikes_before = subject.num_bikes
@@ -43,7 +43,16 @@ describe DockingStation do
           expect { subject.release_bike }.to raise_error 'No bikes available'
         end
       end
+
+      it 'reduces num_bikes by 1 when there are are bikes at station' do
+        if subject.any_bikes?
+          bikes_before = subject.num_bikes
+          subject.release_bike
+          expect(subject.num_bikes).to eq (bikes_before - 1)
+        end
+      end
     end
+
 
     it { expect(subject.any_bikes?).to eq subject.num_bikes > 0 ? true : false }
 
