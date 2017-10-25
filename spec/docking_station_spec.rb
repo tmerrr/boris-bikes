@@ -27,33 +27,29 @@ describe DockingStation do
     it { is_expected.to respond_to(:num_bikes) }
 
     context 'when dock is called' do
-      it 'adds 1 to num_bikes' do
-        unless subject.any_bikes?
-          bikes_before = subject.num_bikes
-          bike = Bike.new
-          subject.dock(bike)
-          expect(subject.num_bikes).to eq (bikes_before + 1)
+      it 'adds 1 to num_bikes if not full' do
+        if subject.num_bikes < 20
+          expect{subject.dock(Bike.new)}.to change {subject.num_bikes}.by(1)
         end
       end
     end
 
     describe '#release_bike' do
       it 'raises an error when there are no bikes' do
-        unless subject.any_bikes?
+        if subject.num_bikes == 0
           expect { subject.release_bike }.to raise_error 'No bikes available'
         end
       end
 
       it 'reduces num_bikes by 1 when there are are bikes at station' do
-        if subject.any_bikes?
-          bikes_before = subject.num_bikes
-          subject.release_bike
-          expect(subject.num_bikes).to eq (bikes_before - 1)
+        if subject.num_bikes > 0
+          expect{subject.release_bike}.to change {subject.num_bikes}.by(-1)
         end
       end
     end
 
+    it { expect(subject.num_bikes).to eq subject.current_bikes.length }
 
-    it { expect(subject.any_bikes?).to eq subject.num_bikes > 0 ? true : false }
+    #it { subject.instance_eval{ full? }.should eq subject.num_bikes >= 20 ? true : false }
 
 end
