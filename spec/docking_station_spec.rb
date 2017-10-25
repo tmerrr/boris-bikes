@@ -35,7 +35,17 @@ describe DockingStation do
           expect{subject.dock(Bike.new)}.to change {subject.num_bikes}.by(1)
         end
       end
+
+      it 'reports bike as broken if not working' do
+        bike = subject.release_bike
+        unless bike.working
+            expect(subject.dock(bike)).to eq "Bike reported as broken"
+        end
+      end
     end
+
+
+
 
     describe '#release_bike' do
       it 'raises an error when there are no bikes' do
@@ -49,10 +59,27 @@ describe DockingStation do
           expect{subject.release_bike}.to change {subject.num_bikes}.by(-1)
         end
       end
+
+      it "release a bike if working" do
+        if subject.current_bikes.last.working
+          expect(subject.release_bike).to be_a(Bike)
+        end
+      end
+
+      it "won't release bike if all broken" do
+        subject.current_bikes.each { |bike| bike.working = false }
+
+        broken_bikes = 0
+        subject.current_bikes.each do |bike|
+          broken_bikes += 1 unless bike.working
+        end
+        if broken_bikes == subject.num_bikes
+            expect(subject.release_bike).to eq "sorry all bikes broken"
+        end
+      end
+
     end
 
     it { expect(subject.num_bikes).to eq subject.current_bikes.length }
-
-    #it { subject.instance_eval{ full? }.should eq subject.num_bikes >= 20 ? true : false }
 
 end

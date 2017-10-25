@@ -12,12 +12,23 @@ class DockingStation
 
   def release_bike
     fail 'No bikes available' if empty?
-    @bike = @current_bikes.pop
+    broken_bikes = 0
+    @current_bikes.each do |bike|
+      broken_bikes += 1 unless bike.working
+    end
+
+    if broken_bikes == num_bikes
+      "sorry all bikes broken"
+    else
+      @current_bikes.pop
+    end
   end
 
   def dock(bike)
     fail 'Station up to capacity' if full?
+    # bike.working = broken_bike?
     @current_bikes << bike
+    'Bike reported as broken' unless bike.working
   end
 
   def num_bikes
@@ -31,6 +42,11 @@ class DockingStation
 
   def empty?
     @current_bikes.empty?
+  end
+
+  def broken_bike?
+    number = rand(101)
+    number <= 80
   end
 
 end
