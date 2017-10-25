@@ -5,33 +5,46 @@ describe DockingStation do
 
     it { is_expected.to respond_to(:release_bike) }
 
-    it 'creates a bike' do
-      expect(subject.release_bike).to be_instance_of(Bike)
+    describe '#release_bike' do
+      it 'releases a bike when available' do
+        if subject.num_bikes > 0
+          expect(subject.release_bike).to eq subject.bike
+        end
+      end
     end
 
-    it { is_expected.to respond_to(:return_bike) }
+    it { is_expected.to respond_to(:dock) }
+
+    describe '#dock' do
+      it 'does not exceed capacity of one' do
+        if subject.any_bikes?
+          bike = Bike.new
+          expect { subject.dock(bike) }.to raise_error 'Station up to capacity'
+        end
+      end
+    end
 
     it { is_expected.to respond_to(:num_bikes) }
+
     context 'when return_bike is called' do
       it 'adds 1 to num_bikes' do
-        bikes_before = subject.num_bikes
-        subject.return_bike
-        expect(subject.num_bikes).to eq (bikes_before + 1)
+        unless subject.any_bikes?
+          bikes_before = subject.num_bikes
+          bike = Bike.new
+          subject.dock(bike)
+          expect(subject.num_bikes).to eq (bikes_before + 1)
+        end
       end
     end
 
     describe '#release_bike' do
       it 'raises an error when there are no bikes' do
-        expect { subject.release_bike }.to raise_error 'No bikes available'
+        unless subject.any_bikes?
+          expect { subject.release_bike }.to raise_error 'No bikes available'
+        end
       end
     end
 
     it { expect(subject.any_bikes?).to eq subject.num_bikes > 0 ? true : false }
-
-    # describe '#any_bikes?' do
-    #   it 'returns NoMethodError before it\'s been created' do
-    #     expect { subject.any_bikes }.to raise_error 'Method .any_bikes? not created'
-    #   end
-    # end
 
 end
