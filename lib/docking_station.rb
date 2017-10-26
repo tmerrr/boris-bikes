@@ -12,14 +12,8 @@ class DockingStation
 
   def release_bike
     fail 'No bikes available' if empty?
-    broken_bikes = 0
-    @current_bikes.each { |bike| broken_bikes += 1 unless bike.working }
-
-    if broken_bikes == num_bikes
-      "sorry all bikes broken"
-    else
-      @current_bikes.pop
-    end
+    fail "sorry all bikes broken" if num_working_bikes <= 0
+    get_working_bike
   end
 
   def dock(bike)
@@ -50,7 +44,17 @@ class DockingStation
 
   def broken_bike?
     number = rand(101)
-    number <= 80
+    number <= 70
+  end
+
+  def get_working_bike
+    @current_bikes.each do |bike|
+      if bike.working
+        bike_index = @current_bikes.index(bike)
+        working_bike = @current_bikes.delete_at(bike_index)
+      end
+    return working_bike
+    end
   end
 
 end

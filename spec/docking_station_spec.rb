@@ -1,12 +1,6 @@
 require 'docking_station.rb'
 
 describe DockingStation do
-    it { is_expected.to be_a(DockingStation) }
-
-    it { is_expected.to respond_to(:release_bike) }
-
-    it { is_expected.to respond_to(:dock) }
-
     describe '#dock' do
       it 'does not exceed capacity' do
         if subject.num_bikes <= subject.capacity
@@ -16,7 +10,16 @@ describe DockingStation do
       end
     end
 
-    it { is_expected.to respond_to(:num_bikes) }
+    describe '#release_bike' do
+      context 'when bike is broken, but working bikes are available' do
+        it 'returns the next available bike' do
+          bike = subject.current_bikes.last
+          bike.working = false
+          expect(subject.release_bike).not_to eq bike
+          expect(subject.release_bike).to be_a(Bike)
+        end
+      end
+    end
 
     it { expect(DockingStation.new(25).capacity).to eq 25 }
     it { expect(DockingStation.new().capacity).to eq 20 }
@@ -52,9 +55,8 @@ describe DockingStation do
       end
 
       it "won't release bike if all broken" do
-        expect(subject.release_bike).to eq "sorry all bikes broken" if subject.num_working_bikes <= 0
+        expect{ subject.release_bike }.to raise_error "sorry all bikes broken" if subject.num_working_bikes <= 0
       end
-
     end
 
     it { expect(subject.num_bikes).to eq subject.current_bikes.length }
