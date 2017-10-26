@@ -13,9 +13,7 @@ class DockingStation
   def release_bike
     fail 'No bikes available' if empty?
     broken_bikes = 0
-    @current_bikes.each do |bike|
-      broken_bikes += 1 unless bike.working
-    end
+    @current_bikes.each { |bike| broken_bikes += 1 unless bike.working }
 
     if broken_bikes == num_bikes
       "sorry all bikes broken"
@@ -33,6 +31,12 @@ class DockingStation
 
   def num_bikes
     @current_bikes.length
+  end
+
+  def num_working_bikes
+    working_bikes = 0
+    @current_bikes.each { |bike| working_bikes += 1 if bike.working }
+    working_bikes
   end
 
   private

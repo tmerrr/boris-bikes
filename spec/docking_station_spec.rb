@@ -5,14 +5,6 @@ describe DockingStation do
 
     it { is_expected.to respond_to(:release_bike) }
 
-    describe '#release_bike' do
-      it 'releases a bike when available' do
-        if subject.num_bikes > 0
-          expect(subject.release_bike).to eq subject.bike
-        end
-      end
-    end
-
     it { is_expected.to respond_to(:dock) }
 
     describe '#dock' do
@@ -29,7 +21,7 @@ describe DockingStation do
     it { expect(DockingStation.new(25).capacity).to eq 25 }
     it { expect(DockingStation.new().capacity).to eq 20 }
 
-    context 'when dock is called' do
+    context 'when docking a bike' do
       it 'adds 1 to num_bikes if not full' do
         if subject.num_bikes < subject.capacity
           expect{subject.dock(Bike.new)}.to change {subject.num_bikes}.by(1)
@@ -38,14 +30,9 @@ describe DockingStation do
 
       it 'reports bike as broken if not working' do
         bike = subject.release_bike
-        unless bike.working
-            expect(subject.dock(bike)).to eq "Bike reported as broken"
-        end
+        expect(subject.dock(bike)).to eq "Bike reported as broken" unless bike.working
       end
     end
-
-
-
 
     describe '#release_bike' do
       it 'raises an error when there are no bikes' do
@@ -56,30 +43,25 @@ describe DockingStation do
 
       it 'reduces num_bikes by 1 when there are are bikes at station' do
         if subject.num_bikes > 0
-          expect{subject.release_bike}.to change {subject.num_bikes}.by(-1)
+          expect{ subject.release_bike }.to change { subject.num_bikes }.by(-1)
         end
       end
 
       it "release a bike if working" do
-        if subject.current_bikes.last.working
-          expect(subject.release_bike).to be_a(Bike)
-        end
+        expect(subject.release_bike).to be_a(Bike) if subject.num_working_bikes > 0
       end
 
       it "won't release bike if all broken" do
-        subject.current_bikes.each { |bike| bike.working = false }
-
-        broken_bikes = 0
-        subject.current_bikes.each do |bike|
-          broken_bikes += 1 unless bike.working
-        end
-        if broken_bikes == subject.num_bikes
-            expect(subject.release_bike).to eq "sorry all bikes broken"
-        end
+        expect(subject.release_bike).to eq "sorry all bikes broken" if subject.num_working_bikes <= 0
       end
 
     end
 
     it { expect(subject.num_bikes).to eq subject.current_bikes.length }
+
+    it 'returns number of working bikes in docking station' do
+      subject.current_bikes.sample.working = false
+      expect(subject.num_working_bikes).to eq (subject.capacity - 1)
+    end
 
 end
