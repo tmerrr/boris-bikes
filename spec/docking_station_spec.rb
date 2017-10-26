@@ -23,7 +23,7 @@ describe DockingStation do
 
     context 'when the bike being returned is broken' do
       it 'reports bike as broken if not working' do
-        bike = subject.release_bike
+        bike = Bike.new
         expect(subject.dock(bike)).to eq "Bike reported as broken" unless bike.working
       end
     end
@@ -32,6 +32,7 @@ describe DockingStation do
   describe '#release_bike' do
     context 'when bike is broken, but working bikes are available' do
       it 'returns the next available bike' do
+        5.times { subject.current_bikes << Bike.new }
         bike = subject.current_bikes.last
         bike.working = false
         expect(subject.release_bike).not_to eq bike
@@ -41,7 +42,7 @@ describe DockingStation do
 
     context 'when there are no bikes' do
       it 'raises an error' do
-        if subject.num_bikes == 0
+        if subject.num_bikes <= 0
           expect { subject.release_bike }.to raise_error 'No bikes available'
         end
       end
@@ -61,8 +62,14 @@ describe DockingStation do
       end
     end
 
+    # => using double syntax to isolate test
+    # it 'releases a working bike' do
+    #   subject.dock(double(:bike))
+    # end
+
     context 'when all remaining bikes are broken' do
       it "won't release bike if all broken" do
+        subject.current_bikes << Bike.new
         expect{ subject.release_bike }.to raise_error "sorry all bikes broken" if subject.num_working_bikes <= 0
       end
     end
@@ -74,8 +81,8 @@ describe DockingStation do
 
   describe '#num_working_bikes' do
     it 'returns number of working bikes in docking station' do
-      subject.current_bikes.sample.working = false
-      expect(subject.num_working_bikes).to eq (subject.capacity - 1)
+      subject.current_bikes << Bike.new
+      expect{ subject.current_bikes.first.working = false }.to change { subject.num_working_bikes }.by(-1)
     end
   end
 
