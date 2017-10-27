@@ -1,5 +1,17 @@
 require 'docking_station.rb'
 
+class WorkingBikeMock
+  def working?
+    true
+  end
+end
+
+class BrokenBikeMock
+  def working?
+    false
+  end
+end
+
 describe DockingStation do
 
   describe 'when creating instance of class' do
