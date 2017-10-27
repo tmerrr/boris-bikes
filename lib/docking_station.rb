@@ -1,12 +1,13 @@
 require_relative './bike.rb'
 
 class DockingStation
-  attr_reader :bike, :current_bikes, :capacity
+  attr_reader :bikes, :capacity
+  DEFAULT_CAPACITY = 20
 
   public
-  def initialize(capacity=20)
+  def initialize(capacity=DEFAULT_CAPACITY)
     @capacity = capacity
-    @current_bikes = []
+    @bikes = []
   end
 
   def release_bike
@@ -17,28 +18,28 @@ class DockingStation
 
   def dock(bike)
     fail 'Station up to capacity' if full?
-    bike.working = broken_bike?
-    @current_bikes << bike
-    'Bike reported as broken' unless bike.working
+    # bike.break_bike if broken_bike?
+    @bikes << bike
+    'Bike reported as broken' unless bike.working?
   end
 
   def num_bikes
-    @current_bikes.length
+    @bikes.length
   end
 
   def num_working_bikes
     working_bikes = 0
-    @current_bikes.each { |bike| working_bikes += 1 if bike.working }
+    @bikes.each { |bike| working_bikes += 1 if bike.working? }
     working_bikes
   end
 
   private
   def full?
-    @current_bikes.length >= @capacity
+    @bikes.length >= @capacity
   end
 
   def empty?
-    @current_bikes.empty?
+    @bikes.empty?
   end
 
   def broken_bike?
@@ -47,12 +48,12 @@ class DockingStation
   end
 
   def get_working_bike
-    @current_bikes.each do |bike|
-      if bike.working
-        bike_index = @current_bikes.index(bike)
-        working_bike = @current_bikes.delete_at(bike_index)
+    @bikes.each do |bike|
+      if bike.working?
+        bike_index = @bikes.index(bike)
+        working_bike = @bikes.delete_at(bike_index)
       end
-    return working_bike
+      return working_bike
     end
   end
 
