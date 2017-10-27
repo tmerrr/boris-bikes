@@ -18,7 +18,6 @@ class DockingStation
 
   def dock(bike)
     fail 'Station up to capacity' if full?
-    # bike.break_bike if broken_bike?
     @bikes << bike
     'Bike reported as broken' unless bike.working?
   end
@@ -28,9 +27,7 @@ class DockingStation
   end
 
   def num_working_bikes
-    working_bikes = 0
-    @bikes.each { |bike| working_bikes += 1 if bike.working? }
-    working_bikes
+    @bikes.count { |bike| bike.working? }
   end
 
   private
@@ -42,19 +39,8 @@ class DockingStation
     @bikes.empty?
   end
 
-  def broken_bike?
-    number = rand(101)
-    number <= 70
-  end
-
   def get_working_bike
-    @bikes.each do |bike|
-      if bike.working?
-        bike_index = @bikes.index(bike)
-        working_bike = @bikes.delete_at(bike_index)
-      end
-      return working_bike
-    end
+    @bikes.each { |bike| return @bikes.delete(bike) if bike.working? }
   end
 
 end
